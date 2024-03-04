@@ -18,7 +18,6 @@
 # Logs and databases #
 ######################
 *.log
-*.sql
 *.jtl
 hs_err_pid*
 
