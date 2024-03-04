@@ -11,6 +11,16 @@ Esta aplicación Spring Boot está diseñada para analizar y exponer datos abier
 - **Docker 🐳**: Contenerización de la aplicación para facilitar el despliegue y la escalabilidad.
 - **Swagger 📄**: Documentación de la API Rest para facilitar la interacción con el servicio.
 - **Kubernetes ☸**: Configuración preparada para desplegar en Kubernetes, permitiendo un escalado y gestión eficientes de la aplicación en entornos de producción.
+- 
+## 🌟 Demo en Vivo
+
+La demo de la aplicación está desplegada y dockerizada en Docker Hub con integración y despliegue continuos mediante GitHub Actions. Puedes interactuar con la demo en vivo a través de los siguientes enlaces:
+
+- **Swagger UI**: Visualiza y prueba la API en vivo en [Dando clic aquí](https://arkondata-gilberto-prueba-bd0063b75791.herokuapp.com/swagger-ui/index.html).
+- **OpenAPI Specification**: Consulta la especificación OpenAPI en formato JSON en [OpenAPI Docs](https://arkondata-gilberto-prueba-bd0063b75791.herokuapp.com/v3/api-docs).
+
+Estos enlaces te permitirán ver la documentación interactiva de la API y realizar peticiones de prueba directamente desde tu navegador.
+
 
 ## 💻 Ejecución Local
 
