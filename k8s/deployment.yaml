@@ -14,6 +14,6 @@ spec: # Especificación del despliegue.
     spec: # Especificación de los contenedores que corren en cada Pod.
       containers:
       - name: akondata-pruebatecnica-pipeline # Nombre del contenedor. Útil para referenciarlo en comandos kubectl.
-        image: docker.io/username/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT # La imagen del contenedor a correr.
+        image: docker.io/gilgasan/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT # La imagen del contenedor a correr.
         ports:
         - containerPort: 8080 # El puerto en el que el contenedor está escuchando.

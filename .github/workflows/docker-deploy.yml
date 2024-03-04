@@ -1,28 +1,59 @@
-name: Desplegar a Docker Hub
+name: Desplegar a Docker Hub y luego a Heroku
 
 on:
   push:
     branches:
-      - master  # Cuando haya cambios en la rama master desplegar
+      - master  # Se activa con los cambios en la rama master
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest  # Ejecuta el workflow en un entorno Ubuntu
+  # Primer trabajo: Construir y desplegar la imagen a Docker Hub
+  build-and-push-dockerhub:
+    runs-on: ubuntu-latest  # Usa un entorno Ubuntu
     steps:
-    - uses: actions/checkout@v2
-      # El paso checkout obtiene una copia del respositorio.
-      
-    - name: Configurar JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
-      # Este paso configura el entorno de Java utilizando JDK 11.
+      - uses: actions/checkout@v2
+        # Obtiene una copia del repositorio.
 
-    - name: Construir y desplegar imagen Docker
-      run: mvn -Pdockerhub compile jib:build
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      # Este paso construye la aplicación y despliega la imagen Docker a Docker Hub
-      # usando las credenciales configuradas como secretos en GitHub.
+      - name: Configurar JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+        # Configura el entorno de Java.
+
+      - name: Construir y desplegar imagen Docker a Docker Hub
+        run: mvn -Pdockerhub compile jib:build
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        # Construye la aplicación y despliega la imagen Docker a Docker Hub.
+
+  # Segundo trabajo: Desplegar la aplicación en Heroku desde Docker Hub
+  deploy-to-heroku:
+    needs: build-and-push-dockerhub  # Este trabajo necesita completarse primero
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        # Vuelve a obtener una copia del repositorio para el despliegue a Heroku.
+
+      - name: Login a Heroku
+        run: heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        # Autentica con Heroku Container Registry.
+
+      - name: Desplegar a Heroku desde Docker Hub
+        run: |
+          docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/gilgasan/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT
+          docker tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/gilgasan/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        # Este comando descarga la imagen de Docker Hub, la etiqueta para Heroku, y la sube al Container Registry de Heroku.
+
+      - name: Release Docker container en Heroku
+        run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        # Libera el contenedor para que se ejecute en Heroku.
