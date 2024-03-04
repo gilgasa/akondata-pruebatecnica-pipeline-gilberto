@@ -1,0 +1,28 @@
+name: Desplegar a Docker Hub
+
+on:
+  push:
+    branches:
+      - master  # Cuando haya cambios en la rama master desplegar
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest  # Ejecuta el workflow en un entorno Ubuntu
+    steps:
+    - uses: actions/checkout@v2
+      # El paso checkout obtiene una copia del respositorio.
+      
+    - name: Configurar JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+      # Este paso configura el entorno de Java utilizando JDK 11.
+
+    - name: Construir y desplegar imagen Docker
+      run: mvn -Pdockerhub compile jib:build
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      # Este paso construye la aplicación y despliega la imagen Docker a Docker Hub
+      # usando las credenciales configuradas como secretos en GitHub.

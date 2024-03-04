@@ -176,6 +176,47 @@
                 </plugins>
             </build>
         </profile>
+        
+        <!-- Perfil para compilar y dockerizar la aplicación con Jib y subirla a dockerhub -->
+        <profile>
+            <id>dockerhub</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>3.1.4</version>
+                        <configuration>
+                            <to>
+                                <!-- Nombre de usario/repositorio/imagen -->
+                                <image>gilgasan/akondata-pruebatecnica-pipeline-gilberto:${project.version}</image>
+                                <auth>
+                                    <!-- Las credenciales se configurarán a través de variables de entorno en GitHub Actions -->
+                                    <username>${env.DOCKERHUB_USERNAME}</username>
+                                    <password>${env.DOCKERHUB_PASSWORD}</password>
+                                </auth>
+                            </to>
+                            <from>
+                                <image>adoptopenjdk:11-jre-hotspot</image>
+                            </from>
+                            <container>
+                                <mainClass>com.arkondata.pruebatecnica.pipeline.PipelineApplication</mainClass>
+                                <extraClasspath>["/app/resources/"]</extraClasspath>
+                            </container>
+                            <extraDirectories>
+                                <paths>
+                                    <path>
+                                        <from>${project.build.outputDirectory}/data</from>
+                                        <into>/app/resources</into>
+                                    </path>
+                                </paths>
+                            </extraDirectories>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
 
     </profiles>
     <!-- Nombre del proyecto -->

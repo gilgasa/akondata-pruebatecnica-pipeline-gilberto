@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+	<action>
+		<actionName>
+			CUSTOM-Compilar dockerizar y subir a DockerHub
+		</actionName>
+		<displayName>
+			Compilar dockerizar y subir a DockerHub
+		</displayName>
+		<goals>
+			<goal>
+				clean
+			</goal>
+			<goal>
+				package
+			</goal>
+			<goal>
+				jib:build
+			</goal>
+			<goal>
+				-Pdockerhub
+			</goal>
+		</goals>
+	</action>
+	<action>
+		<actionName>
+			CUSTOM-Compilar dockerizar localmente
+		</actionName>
+		<displayName>
+			Compilar dockerizar localmente
+		</displayName>
+		<goals>
+			<goal>
+				clean
+			</goal>
+			<goal>
+				package
+			</goal>
+			<goal>
+				jib:build
+			</goal>
+			<goal>
+				-Pdocker
+			</goal>
+		</goals>
+	</action>
+</actions>
