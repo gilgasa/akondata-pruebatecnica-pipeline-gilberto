@@ -1,8 +1,11 @@
 ![Logo de Arkon Data](https://www.arkondata.com/images/logo_arkon.svg)
 
+
 # 🌐 Pipeline Spring Boot: Acceso WiFi Ciudad de México
 
 Esta aplicación Spring Boot está diseñada para analizar y exponer datos abiertos de la Ciudad de México, específicamente los puntos de acceso WiFi disponibles en la ciudad. La aplicación está contenerizada para Docker, documentada con Swagger para facilitar su uso, y preparada para un despliegue eficiente en Kubernetes.
+
+![Diagrama Solución Gilberto García](https://pruebasconna.s3.amazonaws.com/Diagrama+soluci%C3%B3n.png)
 
 ## 🚀 Características
 
