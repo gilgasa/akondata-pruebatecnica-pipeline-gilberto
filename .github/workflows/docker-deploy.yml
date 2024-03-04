@@ -20,6 +20,10 @@ jobs:
           distribution: 'adopt'
         # Configura el entorno de Java.
 
+      - name: Login a Docker Hub
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        # Autentica con Docker Hub para permitir la descarga de imágenes y evitar límites de tasa.
+
       - name: Construir y desplegar imagen Docker a Docker Hub
         run: mvn -Pdockerhub compile jib:build
         env:
@@ -35,6 +39,10 @@ jobs:
       - uses: actions/checkout@v2
         # Vuelve a obtener una copia del repositorio para el despliegue a Heroku.
 
+      - name: Login a Docker Hub
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        # Autentica con Docker Hub antes de hacer pull de la imagen.
+
       - name: Login a Heroku
         run: heroku container:login
         env:
@@ -43,14 +51,12 @@ jobs:
 
       - name: Desplegar a Heroku desde Docker Hub
         run: |
-          docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/gilgasan/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT
-          docker tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/gilgasan/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+          docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT
+          docker tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
           docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        # Este comando descarga la imagen de Docker Hub, la etiqueta para Heroku, y la sube al Container Registry de Heroku.
+        # Descarga la imagen de Docker Hub, la etiqueta para Heroku y la sube al Container Registry de Heroku.
 
       - name: Release Docker container en Heroku
         run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
