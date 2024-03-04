@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- Información básica del proyecto -->
+    <groupId>com.arkondata.pruebatecnica</groupId>
+    <artifactId>akondata-pruebatecnica-pipeline-gilberto</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <!-- Spring Boot como padre del proyecto para simplificar la gestión de dependencias y la configuración -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.16</version>
+        <relativePath/>
+    </parent>
+    <!-- Propiedades del proyecto para configurar la codificación y la versión de Java -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+    <!-- Dependencias del proyecto -->
+    <dependencies>
+        <!-- Dependencias de Spring Boot para el desarrollo web, validación, seguridad, JPA y Swagger -->
+        <!-- Spring Boot Starter Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <!-- Spring Boot Starter Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+
+        <!-- Spring Boot Starter Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
+        
+        <!-- SpringFox dependencies for Swagger 3.x -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+
+        <!-- Spring Boot Starter Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- JUnit Jupiter (JUnit 5) Engine -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring Boot Starter Data JPA  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        
+        <!-- Base de datos en memorioa HD -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
+    <!-- Configuración del build del proyecto -->
+    <build>
+        <plugins>
+            <!-- Plugin para ejecutar el generador de scripts SQL -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-sql-script</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <mainClass>com.arkondata.pruebatecnica.pipeline.config.SqlScriptGenerator</mainClass>
+                            <arguments>
+                                <argument>data/2024-01-18-puntos_de_acceso_wifi.csv</argument>
+                                <argument>data/wifi_access_points.sql</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Plugin para incluir el archivo SQL en el JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>include-sql-script</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/data</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-resources</directory>
+                                    <includes>
+                                        <include>wifi_access_points.sql</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Perfil predeterminado para la compilación estándar sin Docker -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- Perfil para compilar y dockerizar la aplicación con Jib -->
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <!-- Configuración de Jib para Dockerizar la aplicación -->
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>3.1.4</version>
+                        <configuration>
+                            <to>
+                                <image>com.arkondata.pruebatecnica/${project.artifactId}:${project.version}</image>
+                            </to>
+                            <from>
+                                <image>adoptopenjdk:11-jre-hotspot</image>
+                            </from>
+                            <container>
+                                <mainClass>com.arkondata.pruebatecnica.pipeline.PipelineApplication</mainClass>
+                                <extraClasspath>["/app/resources/"]</extraClasspath>
+                            </container>
+                            <extraDirectories>
+                                <paths>
+                                    <path>
+                                        <from>${project.build.outputDirectory}/data</from>
+                                        <into>/app/resources</into>
+                                    </path>
+                                </paths>
+                            </extraDirectories>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+    <!-- Nombre del proyecto -->
+    <name>akondata-pruebatecnica-pipeline-gilberto</name>
+
+</project>

@@ -1,0 +1,83 @@
+# Help files #
+###############
+
+# Maven wrapper #
+#################
+!.mvn/wrapper/maven-wrapper.jar
+
+# Compiled source #
+###################
+*.class
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.jtl
+hs_err_pid*
+
+# Java specific #
+#################
+*.jar
+
+# Maven target directories #
+############################
+/target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Spring Tool Suite #
+#####################
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA #
+#################
+.idea
+*.iws
+*.iml
+*.ipr
+
+# NetBeans #
+#############
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Visual Studio Code #
+#######################
+.vscode/
+
+# OS specific #
+###############
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Kubernetes #
+##############
+
+
+# Others #
+##########
+

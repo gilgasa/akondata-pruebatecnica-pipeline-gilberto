@@ -1,0 +1,19 @@
+apiVersion: apps/v1 # La versión de la API de Kubernetes utilizada para este objeto.
+kind: Deployment # El tipo de objeto que estamos creando.
+metadata:
+  name: akondata-pruebatecnica-pipeline # El nombre único dentro del clúster para este Deployment.
+spec: # Especificación del despliegue.
+  replicas: 2 # Número de instancias de la aplicación que queremos correr.
+  selector: # Define cómo el Deployment encuentra los Pods que debe gestionar.
+    matchLabels:
+      app: akondata-pruebatecnica-pipeline # Selecciona los Pods que tienen esta etiqueta.
+  template: # La plantilla para los Pods que se van a crear.
+    metadata:
+      labels:
+        app: akondata-pruebatecnica-pipeline # Etiqueta aplicada a cada Pod creado por este Deployment. Utilizada por el selector.
+    spec: # Especificación de los contenedores que corren en cada Pod.
+      containers:
+      - name: akondata-pruebatecnica-pipeline # Nombre del contenedor. Útil para referenciarlo en comandos kubectl.
+        image: docker.io/username/akondata-pruebatecnica-pipeline-gilberto:1.0-SNAPSHOT # La imagen del contenedor a correr.
+        ports:
+        - containerPort: 8080 # El puerto en el que el contenedor está escuchando.
