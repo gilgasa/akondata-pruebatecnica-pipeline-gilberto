@@ -147,54 +147,6 @@
             <id>docker</id>
             <build>
                 <plugins>
-                    <!-- Plugin para ejecutar el generador de scripts SQL -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <id>generate-sql-script</id>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <phase>process-classes</phase>
-                                <configuration>
-                                    <mainClass>com.arkondata.pruebatecnica.pipeline.config.SqlScriptGenerator</mainClass>
-                                    <arguments>
-                                        <argument>data/2024-01-18-puntos_de_acceso_wifi.csv</argument>
-                                        <argument>data/wifi_access_points.sql</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Plugin para incluir el archivo SQL en el JAR -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>include-sql-script</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.outputDirectory}/data</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.build.directory}/generated-resources</directory>
-                                            <includes>
-                                                <include>wifi_access_points.sql</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <!-- Configuración de Jib para Dockerizar la aplicación -->
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
@@ -230,54 +182,6 @@
             <id>dockerhub</id>
             <build>
                 <plugins>
-                    <!-- Plugin para ejecutar el generador de scripts SQL -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <id>generate-sql-script</id>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <phase>process-classes</phase>
-                                <configuration>
-                                    <mainClass>com.arkondata.pruebatecnica.pipeline.config.SqlScriptGenerator</mainClass>
-                                    <arguments>
-                                        <argument>data/2024-01-18-puntos_de_acceso_wifi.csv</argument>
-                                        <argument>data/wifi_access_points.sql</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Plugin para incluir el archivo SQL en el JAR -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>include-sql-script</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.outputDirectory}/data</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.build.directory}/generated-resources</directory>
-                                            <includes>
-                                                <include>wifi_access_points.sql</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
